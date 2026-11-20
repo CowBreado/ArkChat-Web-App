@@ -16,10 +16,11 @@ def initialize_routes(app):
             return redirect(url_for("dashboard"))
         return render_template("home.html")
 
-    @app.route("/view")
-    def check():
-        users = database.get_users()    
-        return render_template("view-users.html", users=users)
+    #Disabling this due to privacy concerns.
+    #@app.route("/view")
+    #def check():
+    #    users = database.get_users()    
+    #    return render_template("view-users.html", users=users)
 
     @app.route("/edit", methods=["GET"])
     def edit():
