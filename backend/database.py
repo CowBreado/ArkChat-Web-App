@@ -1,163 +1,263 @@
-import sqlite3
-import bcrypt
 import os
+import bcrypt
+import psycopg
+from dotenv import load_dotenv
+from psycopg.rows import dict_row
 
-#Connect to the database path 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH = os.path.join(BASE_DIR, f'{"practice"}.db')
+load_dotenv()
 
 def hash_password(password):
-    #Convert the password into bytes so bcrypt can be used
-    password = password.encode('utf-8')
-    #Hash the converted bytes using bcrypt 
-    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt()).decode()
-    return hashed_password 
+    password_bytes = password.encode("utf-8")
+    return bcrypt.hashpw(password_bytes, bcrypt.gensalt()).decode("utf-8")
 
 def open_db():
-    connection = sqlite3.connect(DB_PATH)
-    connection.row_factory = sqlite3.Row
+    database_url = os.getenv("DATABASE_URL")
+    if not database_url:
+        raise RuntimeError("DATABASE_URL is not set")
+
+    connection = psycopg.connect(database_url, row_factory=dict_row)
     cursor = connection.cursor()
     return connection, cursor
 
 def close_db(connection):
-    print("Closing database connection")
-    return connection.close()
+    connection.close()
 
-#Crud operations 
+
+# CRUD operations
 def get_users():
     connection, cursor = open_db()
-    cursor.execute("SELECT * FROM users")
-    users = cursor.fetchall()
-    close_db(connection)
-    return users
+    try:
+        cursor.execute("SELECT * FROM users")
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        close_db(connection)
+
+
 def get_user_by_username(username):
     connection, cursor = open_db()
-    cursor.execute("SELECT * FROM users WHERE lower(username) = ?", (username.lower(), ))
-    queried_user = cursor.fetchone()
-    close_db(connection)
-    return queried_user
+    try:
+        cursor.execute(
+            "SELECT * FROM users WHERE LOWER(username) = %s",
+            (username.lower(),),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def get_user_by_id(user_id):
     connection, cursor = open_db()
-    cursor.execute("SELECT * FROM users WHERE id = ?", (user_id, ))
-    queried_user = cursor.fetchone()
-    close_db(connection)
-    return queried_user
+    try:
+        cursor.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def get_user_conversations(user_id):
     connection, cursor = open_db()
-    #Query all conversation title that belongs to the current session id or user id
-    cursor.execute("""
-    SELECT conversations.title, conversations.created_at, conversations.id FROM USERS 
-        JOIN conversation_participants ON conversation_participants.user_id=users.id
-        JOIN conversations ON conversations.id = conversation_participants.conversation_id
-        WHERE users.id =?
-    """, (user_id,))
-    current_conversations = cursor.fetchall()
-    close_db(connection)
-    return current_conversations
+    try:
+        cursor.execute(
+            """
+            SELECT conversations.title,
+                   conversations.created_at,
+                   conversations.id
+            FROM users
+            JOIN conversation_participants
+              ON conversation_participants.user_id = users.id
+            JOIN conversations
+              ON conversations.id = conversation_participants.conversation_id
+            WHERE users.id = %s
+            ORDER BY conversations.created_at DESC
+            """,
+            (user_id,),
+        )
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        close_db(connection)
 
 
 def get_conversation_chat_log(conversation_id):
     connection, cursor = open_db()
-    cursor.execute("""
-    SELECT * from messages WHERE conversation_id = ?""",(conversation_id,))
-    messages = cursor.fetchall()
-    close_db(connection)
-    return messages
+    try:
+        cursor.execute(
+            """
+            SELECT *
+            FROM messages
+            WHERE conversation_id = %s
+            ORDER BY created_at ASC, id ASC
+            """,
+            (conversation_id,),
+        )
+        return cursor.fetchall()
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def get_conversation_by_id(conversation_id):
     connection, cursor = open_db()
-    cursor.execute("""
-    SELECT * FROM conversations WHERE id = ?
-    """,(conversation_id,))
-    conversation = cursor.fetchone()
-    close_db(connection)
-    return conversation
+    try:
+        cursor.execute(
+            "SELECT * FROM conversations WHERE id = %s",
+            (conversation_id,),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        close_db(connection)
 
-def send_conversation_message(current_user_id, conversation_id,message_content):
+
+def send_conversation_message(current_user_id, conversation_id, message_content):
     connection, cursor = open_db()
-    cursor.execute("""
-    INSERT INTO messages (user_id, conversation_id, content)
-    VALUES (?,?,?)
-    """,(current_user_id, conversation_id, message_content,))
-    connection.commit()
-    close_db(connection)
-    return
+    try:
+        cursor.execute(
+            """
+            INSERT INTO messages (user_id, conversation_id, content)
+            VALUES (%s, %s, %s)
+            """,
+            (current_user_id, conversation_id, message_content),
+        )
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def create_conversation(participant_username):
     connection, cursor = open_db()
-    cursor.execute("""
-    INSERT INTO conversations (title)
-    VALUES(?)
-    """, (participant_username,))
-    conversation_id = cursor.lastrowid
-    connection.commit()
-    close_db(connection)
-    return conversation_id 
+    try:
+        cursor.execute(
+            """
+            INSERT INTO conversations (title)
+            VALUES (%s)
+            RETURNING id
+            """,
+            (participant_username,),
+        )
+        conversation_id = cursor.fetchone()["id"]
+        connection.commit()
+        return conversation_id
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def add_conversation_participant(user_id, conversation_id):
     connection, cursor = open_db()
-    cursor.execute("""
-    INSERT INTO conversation_participants (user_id, conversation_id)
-    VALUES(?,?)
-    """,(user_id,conversation_id))
-    connection.commit()
-    close_db(connection)
-    return f'Added user_id: {user_id} to conversation_id: {conversation_id}'
+    try:
+        cursor.execute(
+            """
+            INSERT INTO conversation_participants (user_id, conversation_id)
+            VALUES (%s, %s)
+            """,
+            (user_id, conversation_id),
+        )
+        connection.commit()
+        return f"Added user_id: {user_id} to conversation_id: {conversation_id}"
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
 
 
-#Get the other participant, not the current session id
 def get_other_conversation_participant_by_id(conversation_id, user_id):
-    connection,cursor = open_db()
-    #Combine conversation_participants and users table 
-    cursor.execute("""
-    SELECT * FROM conversation_participants
-    JOIN users ON conversation_participants.user_id = users.id
-    WHERE conversation_participants.conversation_id = ?
-    AND conversation_participants.user_id != ?
-    """,(conversation_id,user_id))
-    other_participant = cursor.fetchone()
-    return other_participant
+    connection, cursor = open_db()
+    try:
+        cursor.execute(
+            """
+            SELECT users.*
+            FROM conversation_participants
+            JOIN users ON conversation_participants.user_id = users.id
+            WHERE conversation_participants.conversation_id = %s
+              AND conversation_participants.user_id != %s
+            """,
+            (conversation_id, user_id),
+        )
+        return cursor.fetchone()
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def create_user(username, password, age):
     connection, cursor = open_db()
-    password = hash_password(password)
-    cursor.execute("INSERT INTO users (username, password, age) VALUES(?,?,?)", (username, password, age))
-    connection.commit()
-    close_db(connection)
+    try:
+        hashed_password = hash_password(password)
+        cursor.execute(
+            """
+            INSERT INTO users (username, password, age)
+            VALUES (%s, %s, %s)
+            """,
+            (username, hashed_password, age),
+        )
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def update_user(new_username, new_password, new_age, user_id):
     connection, cursor = open_db()
-    new_password = hash_password(new_password)
-    cursor.execute("UPDATE users SET username = ?, password = ?, age = ? WHERE id = ?", 
-    (new_username, new_password,new_age,user_id)
-    )
-    connection.commit()
-    close_db(connection)
+    try:
+        hashed_password = hash_password(new_password)
+        cursor.execute(
+            """
+            UPDATE users
+            SET username = %s, password = %s, age = %s
+            WHERE id = %s
+            """,
+            (new_username, hashed_password, new_age, user_id),
+        )
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def delete_user(user_id):
     connection, cursor = open_db()
-    cursor.execute("DELETE FROM users WHERE id = ?", (user_id, ))
-    connection.commit()
-    close_db(connection)
+    try:
+        cursor.execute("DELETE FROM users WHERE id = %s", (user_id,))
+        connection.commit()
+    except Exception:
+        connection.rollback()
+        raise
+    finally:
+        cursor.close()
+        close_db(connection)
+
 
 def verify_password(username, input_password):
-    user = get_user_by_username(username)  
+    user = get_user_by_username(username)
+
     if user is None:
         return {
-            "status":"error",
-            "message":"login failed, username does not exist"
+            "status": "error",
+            "message": "login failed, username does not exist",
         }
-    hashed_password = user["password"].encode('utf-8')
-    input_password = input_password.encode('utf-8')
-    if bcrypt.checkpw(input_password, hashed_password):
-        return {
-            "status":"success",
-            "message":"login success"
-        }
-    return {
-        "status":"error",
-        "message":"login failed, invalid password"
-    }
 
+    hashed_password = user["password"].encode("utf-8")
+    input_password_bytes = input_password.encode("utf-8")
+
+    if bcrypt.checkpw(input_password_bytes, hashed_password):
+        return {"status": "success", "message": "login success"}
+    return {"status": "error", "message": "login failed, invalid password"}
