@@ -1,16 +1,18 @@
 
 .env
-
-venv/
-.venv/
-
-
-__pycache__/
-*.py[cod]
-
+backend/.env
 
 *.db
 *.sqlite
 *.sqlite3
 
-.vscode/
+
+.venv/
+venv/
+backend/.venv/
+backend/venv/
+
+__pycache__/
+*.pyc
+
+Le reference fiels/
