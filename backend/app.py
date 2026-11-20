@@ -12,7 +12,7 @@ app = Flask(
 )
 
 app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
-
+print("SECRET_KEY loaded:", bool(app.config["SECRET_KEY"]), flush=True)
 # Register routes for both Render and local execution
 routes.initialize_routes(app)
 
