@@ -11,7 +11,7 @@ app = Flask(
     static_folder="../static"
 )
 
-app.secret_key = os.getenv("SECRET_KEY")
+app.config["SECRET_KEY"] = os.environ["SECRET_KEY"]
 
 # Register routes for both Render and local execution
 routes.initialize_routes(app)
