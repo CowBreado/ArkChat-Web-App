@@ -13,6 +13,8 @@ app = Flask(
 
 app.secret_key = os.getenv("SECRET_KEY")
 
+# Register routes for both Render and local execution
+routes.initialize_routes(app)
+
 if __name__ == "__main__":
-    routes.initialize_routes(app)
     app.run(debug=True)
