@@ -1,0 +1,87 @@
+.view-users-section{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    gap: 20px;
+
+    height: 1032px;
+    width: auto;
+    background-color: #F5F7FA;
+}
+
+.listbox-container{
+    width: 95%;
+    height: 95%;
+    overflow-y: auto;
+    overflow-x: auto;   
+}
+
+.listbox-container::-webkit-scrollbar {
+    display: none;
+    
+}
+
+.listbox-container table{
+    border-color:#89939E;
+    border-collapse: collapse;
+    width: 100%;
+    color: #4D4D4D;
+}
+
+td{
+    border-color:#89939E;
+    border-width: 0.5px 0 0px 0;
+    border-style: solid;
+    border-radius: 15px;
+
+}
+
+td, th{
+    padding: 10px;
+    font-size:14px;
+    font-weight:600;
+    text-align:start;
+}
+
+th{
+    background-color: #d0d8e1;  
+    font-weight: 800;
+}
+
+.listbox-border{
+    border-color:#89939E;
+    border-width: 0.5px;
+    border-style: solid;
+    border-radius: 15px;
+}
+
+button{
+    border-width: 0px;
+    cursor: pointer;
+}
+
+.edit-button{
+    align-self: flex-start;
+    
+    font-size: 14px;
+    color: #4D4D4D;
+    background-color: #f8de9d;
+    display: inline-block;
+    padding: 12px 24px ;
+
+    border-radius:5px;
+
+}
+
+
+.delete-button{
+    align-self: flex-start;
+    
+    font-size: 14px;
+    color: #4D4D4D;
+    background-color: #ed615f;
+    display: inline-block;
+    padding: 12px 24px ;
+
+    border-radius:5px;
+}

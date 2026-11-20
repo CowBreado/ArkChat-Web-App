@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reusable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/practice.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-profile.css') }}">
+    <title>Create User</title>
+    <link rel="icon" type="image/x-icon" href="../static/asset/nianBean.jpg">
+</head>
+<body>
+
+
+<section class="top-navbar-section">
+    <nav>
+        <ul class="navbar">
+            <div class="navbar-logo-container">
+                <img class="navbar-logo" src="../static/asset/nianbean.jpg">ArkChat
+            </div>
+            <div class="navbar-item-container">
+                <div class="navbar-items">
+                    <ul class="navbar-items">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="">About</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </nav>
+</section>
+
+
+
+<main>
+    <section class="modal-section">
+
+            <button onclick="showModal()">Show Modal</button>
+
+            <div class="modal-overlay">
+                <div class="modal-content">
+                    <span id="closeModalbtn" class="close">&times;</span>
+                    <p>This is a simple modal popup</p>
+                    <button onclick="hideModal()" class="close-button">Hide Modal</button>
+                </div>
+            </div>
+
+
+
+    </section>
+</main>
+    <script>
+        <!-- Link to your JavaScript file -->
+        modal = document.querySelector('.modal-overlay')
+        modal_content = document.querySelector('.modal-content')
+
+        //Making an eventlistener to detect 
+        modal.addEventListener('click', hideModal)
+        modal_content.addEventListener('click',(e) =>{
+            e.stopPropagation();
+        })
+        function showModal(){
+            document.querySelector('.modal-overlay').style.display = "flex"
+        }
+        function hideModal(){
+            document.querySelector('.modal-overlay').style.display = 'none'
+        }
+    </script>
+
+
+
+
+
+
+
+</body>
+</html>

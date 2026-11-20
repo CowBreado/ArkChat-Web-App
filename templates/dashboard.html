@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Page Title</title>
+    <link rel="icon" type="image/x-icon" href="../static/asset/nianBean.jpg" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reusable.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-profile.css') }}" />
+    
+  </head>
+  <body>
+      <section class="modal-section">
+        <div class="modal-overlay">
+          <div class="modal-content border">
+              <form action="/dashboard/add-conversation" method="POST">
+                <div class="button-div">
+                    <button type="button" class="exit-button" onclick="hideModal()">X</button>
+                </div>
+                <h1 class="modal-title">Start New Conversation</h1>
+                  <div class="form-row">
+                      <label class="inner-input-label" for="username">Username</label>
+                      <input class="inner-input-label" type="text" id="username" name="username" placeholder="Enter username">
+                  </div>
+                  <div class="button-div">
+                    <button class="add-button"type="submit">Confirm</button>
+                  </div>
+              </form>
+          </div>
+      </div>
+    </section>
+
+
+
+    <section class="top-navbar-section">
+      <nav>
+        <ul class="navbar">
+          <div class="navbar-logo-container"><img class="navbar-logo" src="../static/asset/nianbean.jpg" />ArkChat</div>
+          <div class="navbar-item-container">
+            <div class="navbar-items">
+              <ul class="navbar-items">
+                <li><a href="/">Home</a></li>
+                <li><a href="">About</a></li>
+                {% if 'id' in session %}
+                <li><a href="/logout">Logout</a></li>
+                {% else %}
+                <li><a href="/login">Login</a></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </ul>
+      </nav>
+    </section>
+    
+    <section class="dashboard-section">
+      <div class="section">
+        <div class="left-navbar">
+          <div class="left-title-container">
+            <p class="conversation-title">{{current_user['username']}}'s Conversations</p>
+          </div>
+          <div class="fixed-scrollable-div">
+            <div class="left-conversation-container">
+              <div class="left-conversation-container">
+                <form>
+                  <button type="button" onclick="showModal()">
+                    <p class="left-title-conversation">Start New Conversation</p>
+                  </button>
+                </form>
+              </div>
+            </div>
+            {% if conversations %} 
+              {% for conversation in conversations%}
+              <div class="left-conversation-container">
+                <form action="/dashboard/{{conversation['id']}}" method="GET">
+                  <button type="submit" method="GET">
+                    <p class="left-title-conversation">{{conversation['title']}}</p>
+                  </button>
+                </form>
+              </div>
+              {%endfor%} 
+            {%endif%}
+          </div>
+        </div>
+        <div class="right-navbar b">
+          <div class="right-title-container conversation-title-2"></div>
+          <div class="chat-container">
+            <!--     Display default chatbox   -->
+            {% for message in messages%} 
+              {%if message['user_id'] == current_user['id']%}
+              <div class="chat-template" style="text-align: right">
+                <h1 class="chat-template-title">You</h1>
+                <p class="chat-template-content">{{message['content']}}</p>
+              </div>
+              {%else%}
+              <div class="chat-template">
+                <h1 class="chat-template-title">{{other_user['username']}} </h1>
+                <p class="chat-template-content">{{message['content']}}</p>
+              </div>
+              {%endif%} 
+            {%endfor%}
+          </div>
+          <!-- YOU WORKING ON THIS PART NOW, MAKE IT SEND MESSAGE-->
+          <div class="right-lower-container">
+            <form class="input-form border" action="" method="POST">
+              <input class="input-box" name="input-box" placeholder="Say something..." />
+              <button type="submit">
+                <img class="input-box-button-img" src="../static/asset/arrow-2.png" />
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      <!-- Link to your JavaScript file -->
+      modal = document.querySelector(".modal-overlay");
+      modal_content = document.querySelector(".modal-content");
+
+      //Making an eventlistener to detect
+      modal.addEventListener("click", hideModal);
+      modal_content.addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+      function showModal() {
+        document.querySelector(".modal-overlay").style.display = "flex";
+      }
+      function hideModal() {
+        document.querySelector(".modal-overlay").style.display = "none";
+      }
+      scroll_toBottomChat();
+      function scroll_toBottomChat() {
+        window.addEventListener("DOMContentLoaded", () => {
+          const chatContainer = document.querySelector(".chat-container");
+          if (chatContainer) {
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+          }
+        });
+      }
+      function get_DateTime() {
+        let current_date = new Date().toISOString().slice(0, 19).replace("T", " ");
+        alert(current_date);
+        return (document.getElementById("created_At").innerHTML = current_date);
+      }
+    </script>
+  </body>
+</html>

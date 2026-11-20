@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reusable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/edit-profile.css') }}">
+    <title>Create User</title>
+    <link rel="icon" type="image/x-icon" href="../static/asset/nianBean.jpg">
+</head>
+<body>
+
+
+<section class="top-navbar-section">
+    <nav>
+        <ul class="navbar">
+            <div class="navbar-logo-container">
+                <img class="navbar-logo" src="../static/asset/nianbean.jpg">ArkChat
+            </div>
+            <div class="navbar-item-container">
+                <div class="navbar-items">
+                    <ul class="navbar-items">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="">Features</a></li>
+                        <li><a href="">Community</a></li>
+                        <li><a href="">About</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </nav>
+</section>
+    <main class="main-section">
+        <div class="edit-users-section">
+            <div class="edit-profile-container">     
+                <div class="inner-edit-container curved-border">                    
+                    <h1 class="highlight-2 title-text"style="text-align:center;">Register to ArkChat</h1>
+                    <form class="form" action="/register" method="POST">
+                        <div class="form-row">
+                            <label class="inner-input-label" for="username">Username</label>
+                            <input class="inner-input-label" type="text" id="username" name="username" placeholder="Username">
+                        </div>
+                        <div class="form-row">
+                            <label class="inner-input-label" for="password">Password:</label>
+                            <input class="inner-input-label" type="password" id="password" name="password" placeholder="Password">
+                        </div>
+                        <div class="form-row"> 
+                            <label class="inner-input-label" for="age">Age:</label>
+                            <input class="inner-input-label" type="number" id="age" name="age" placeholder="Age">
+                        </div>
+                        <button href="" type="Submit" class="save-button">Register</button>
+                       </form> 
+                    <button class="return-button"onclick="window.history.back()">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Link to your JavaScript file -->
+    <script src="script.js"></script>
+</body>
+</html>

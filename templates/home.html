@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Page Title</title>
+    <link rel="icon" type="image/x-icon" href="../static/asset/nianBean.jpg">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reusable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style-latest.css') }}">
+
+</head>
+<body>
+
+
+<section class="top-navbar-section">
+    <nav>
+        <ul class="navbar">
+            <div class="navbar-logo-container">
+                <img class="navbar-logo" src="../static/asset/nianbean.jpg">ArkChat
+            </div>
+            <div class="navbar-item-container">
+                <div class="navbar-items">
+                    <ul class="navbar-items">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="">About</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </nav>
+</section>
+
+
+<main>
+    <section class="hero-banner-section">
+        <div class="hero-banner section">
+            <div class="hero-banner-textbox">
+                <h1><span class="highlight">Communicate</span> and Share Insights with <span class="highlight">Others</span></h1>
+                <p>Where every conversation starts, grows, and leaves a lasting impression.</p>
+                <a class="button" href="./register">Register</a>
+            </div>
+            <div class="hero-banner-textbox">
+                <img class="thumbnail" src="../static/asset/conversation.jpg">
+            </div>
+        </div>
+    </section>
+
+    <section class="tech-stack-section">
+        <div class="section-2">
+            <div class="section-2-textbox">
+                <h1>Welcome To The Home Page</h1>
+                <p style="font-size:30px;">This marks the beginning of my backend-frontend learning journey. Current Website Functionality Includes: CRUD Operation using Flask to manipulate a in-memory database.</p>
+                <h1>Available Routes</h1>
+                <ul class="route-list">
+                    <li><a href="/view">View Current Users</a></li>
+                </ul>
+            </div>
+        </div>
+    </section>
+</main>
+
+
+    <script></script>
+</body>
+</html>
+
+
+<!--   
+ <h1 class="center-text">Insert Le Logo Here</h1>
+<img src="{{url_for('static', filename='asset/nianbean.jpg')}}" class="logo-image" alt="Description of my asset image">
+-->

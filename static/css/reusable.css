@@ -1,0 +1,143 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+* {
+    font-family: 'Inter', sans-serif;
+}
+
+body{
+    background-color: #ffffff;
+    padding: 0px;
+    margin: 0px;
+}
+
+
+
+ul, li, p, h1{
+    padding: 0px;
+    margin: 0px;   
+}
+
+a {
+    text-decoration: none;
+    color: #4D4D4D;
+}
+
+.navbar{
+    margin: 0px;
+    padding: 0px;
+    
+    display: flex;
+    justify-content: center;
+
+    color: #4D4D4D;
+    background-color: white;
+    
+    height: 50px;
+    width: 100%;
+    
+    font-size: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-logo-container{
+    display: flex; 
+    justify-content:center;
+    align-items: center;
+    height:auto;
+    width: auto;
+    font-weight:bold;
+    background-color: white;  
+}
+
+.navbar-logo{
+    height: 50px;
+    width: 70px;
+    border-radius: 10px;
+    padding-left:20px;
+    background-color: white;
+}
+
+.navbar-item-container{
+    display: flex;
+    justify-content: flex-end;
+    align-items:center;
+    
+    flex-grow: 1;
+    font-weight:450;
+    background-color: white;
+}
+
+.navbar-items{
+    display: flex;
+    background-color: white;
+}
+
+.navbar-items li{
+    list-style-type: none;  
+    padding-inline: 17px;
+    background-color: white;
+}
+.navbar-items a{
+    background-color: white;
+}
+.button{
+    align-self: flex-start;
+    
+    font-size: 14px;
+    color:white;
+    
+    background-color: #66BB69;
+    display: inline-block;
+
+    margin: 10px;
+    padding: 12px 24px ;
+
+    border-radius:5px;
+    border-width: 0px;
+}
+
+.highlight {
+    color: #66BB69;
+}
+
+.section{
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    gap: 20px;
+
+    height: 516px;
+    width: auto;
+    background-color: #F5F7FA;
+}
+
+.section-2{
+    display: flex;
+    justify-content:center;
+    align-items:flex-start;
+
+    height: 516px;
+    width: auto;
+    
+    background-color: #FFFFFF;
+}
+.section-2-textbox{
+    display: flex;
+    flex-direction:column;
+    
+    margin-top: 10px;
+    font-size: 18px;
+    color:#4D4D4D;
+}
+
+.border{
+    border-width:0.5px;
+    border-style:solid;
+    border-color: #d5d5d5;
+}
+
+.curved-border{
+    border-width:1px;
+    border-style:solid;
+    border-radius: 15px;    
+}

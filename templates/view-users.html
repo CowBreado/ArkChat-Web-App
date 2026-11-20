@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/reusable.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/view-users.css') }}">
+    <title>View Users</title>
+    <link rel="icon" type="image/x-icon" href="../static/asset/nianBean.jpg">
+</head>
+<body>
+
+<!-- Your content goes here -->
+<section class="top-navbar-section">
+    <nav>
+        <ul class="navbar">
+            <div class="navbar-logo-container">
+                <img class="navbar-logo" src="../static/asset/nianbean.jpg">ArkChat
+            </div>
+            <div class="navbar-item-container">
+                <div class="navbar-items">
+                    <ul class="navbar-items">
+                        <li><a href="/">Home</a></li>
+                        <li><a href="">About</a></li>
+                        <li><a href="/login">Login</a></li>
+                    </ul>
+                </div>
+            </div>
+        </ul>
+    </nav>
+</section>
+
+<main>  
+    <section class="view-users-section">
+        <div class="listbox-container  listbox-border">
+            <table>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Age</th>
+                    <th></th> 
+                    <th></th>
+                </tr>
+                {% for user in users %}
+                <tr class="">  
+                    <td>{{user["id"]}}</td>
+                    <td>{{user["username"]}}</td>
+                    <td>{{user["password"]}}</td>
+                    <td>{{user["age"]}}</td>
+                    <td>
+                        <form action="/edit/search" method="POST">
+                            <button href="" name="id" value="{{user['id']}}" type="submit" class="edit-button">Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/delete" method="POST">
+                            <button href="" name="id" value="{{user['id']}}" type="submit" class="delete-button">Delete</button>
+                        </form>
+                    </td>
+                </tr>   
+                {% endfor %}
+            </table>
+        </div>
+    </section>
+</main>  
+</body>
+</html>
